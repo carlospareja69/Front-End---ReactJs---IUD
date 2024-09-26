@@ -1,14 +1,30 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 
 export default function Modal({ 
   media, 
   change, 
   guardar, 
   clearForm, 
-  editing 
+  editing,
+  generos,  
+  directores,
+  productoras,
+  tipos
 }) {
-  const handleChange = e => {
+  const [imagePreview, setImagePreview] = useState('');
+
+  useEffect(() => {
+    // Actualizar la vista previa de la imagen cuando el campo 'imagen' cambie
+    setImagePreview(media.imagen);
+  }, [media.imagen]);
+
+  const handleChange = (e) => {
     change(e);
+
+    // Si se cambia la URL de la imagen, actualizar la vista previa
+    if (e.target.name === 'imagen') {
+      setImagePreview(e.target.value);
+    }
   };
 
   const guardarMedia = (e) => {
@@ -18,6 +34,7 @@ export default function Modal({
 
   const clear = () => {
     clearForm();
+    setImagePreview(''); // Limpiar la vista previa de la imagen
   };
 
   return (
@@ -86,6 +103,16 @@ export default function Modal({
                   onChange={handleChange}
                   value={media.imagen || ''}
                 />
+                {/* Vista previa de la imagen */}
+                {imagePreview && (
+                  <div className="mt-3">
+                    <img 
+                      src={imagePreview} 
+                      alt="Vista previa" 
+                      style={{ maxWidth: '100%', maxHeight: '300px' }} 
+                    />
+                  </div>
+                )}
               </div>
               <div className="mb-3">
                 <label htmlFor="message-text-añoEstreno" className="col-form-label">Año estreno:</label>
@@ -100,49 +127,73 @@ export default function Modal({
                 />
               </div>
               <div className="mb-3">
-                <label htmlFor="message-text-genero" className="col-form-label">Genero:</label>
-                <input
-                  type="text"
+                <label htmlFor="message-text-genero" className="col-form-label">Género:</label>
+                <select
                   className="form-control"
                   id="message-text-genero"
-                  name='genero'
+                  name="genero"
                   onChange={handleChange}
-                  value={media.genero ? media.genero.id : ''}
-                />
+                  value={media.genero}  // Asignamos el id del género seleccionado
+                >
+                  <option value="" disabled>Selecciona un género</option>
+                  {generos.map(genero => (
+                    <option key={genero._id} value={genero._id}>
+                      {genero.nombre}  {/* Ajusta el campo según cómo se llame en tu API */}
+                    </option>
+                  ))}
+                </select>
               </div>
               <div className="mb-3">
                 <label htmlFor="message-text-director" className="col-form-label">Director:</label>
-                <input
-                  type="text"
+                <select
                   className="form-control"
                   id="message-text-director"
-                  name='director'
+                  name="director"
                   onChange={handleChange}
-                  value={media.director ? media.director.id : ''}
-                />
-              </div>
-              <div className="mb-3">
+                  value={media.director}  
+                >
+                  <option value="" disabled>Selecciona un director</option>
+                  {directores.map(director => (
+                    <option key={director._id} value={director._id}>
+                      {director.nombre} 
+                    </option>
+                  ))}
+                </select>
+                </div>
+                <div className="mb-3">
                 <label htmlFor="message-text-productora" className="col-form-label">Productora:</label>
-                <input
-                  type="text"
+                <select
                   className="form-control"
                   id="message-text-productora"
-                  name='productora'
+                  name="productora"
                   onChange={handleChange}
-                  value={media.productora ? media.productora.id : ''}
-                />
-              </div>
-              <div className="mb-3">
+                  value={media.productora}  
+                >
+                  <option value="" disabled>Selecciona una productora</option>
+                  {productoras.map(productora => (
+                    <option key={productora._id} value={productora._id}>
+                      {productora.nombre} 
+                    </option>
+                  ))}
+                </select>
+                </div>
+                <div className="mb-3">
                 <label htmlFor="message-text-tipo" className="col-form-label">Tipo:</label>
-                <input
-                  type="text"
+                <select
                   className="form-control"
                   id="message-text-tipo"
-                  name='tipo'
+                  name="tipo"
                   onChange={handleChange}
-                  value={media.tipo ? media.tipo.id : ''}
-                />
-              </div>
+                  value={media.tipo}  
+                >
+                  <option value="" disabled>Selecciona un tipo</option>
+                  {tipos.map(tipo => (
+                    <option key={tipo._id} value={tipo._id}>
+                      {tipo.nombre} 
+                    </option>
+                  ))}
+                </select>
+                </div>
               <div className="modal-footer">
                 <button 
                   type="button" 
